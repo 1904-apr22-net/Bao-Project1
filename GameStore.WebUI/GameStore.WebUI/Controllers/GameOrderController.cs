@@ -18,20 +18,20 @@ namespace GameStore.WebUI.Controllers
             Repo = repo ?? throw new ArgumentNullException(nameof(repo));
 
         //// GET: GameOrder
-        //public ActionResult Index()
-        //{
-        //    IEnumerable<GameOrder> gameOrders = Repo.GetGameOrders();
-        //    IEnumerable<GameOrderViewModel> viewModel = gameOrders.Select(x => new GameOrderViewModel
-        //    {
-        //        OrderId = x.Id,
-        //        CustomerId = x.CustomerId,
-        //        StoreId = x.StoreId,
-        //        OrderTime = x.OrderTime,
-        //        Customer = Repo.GetCustomerById(x.CustomerId),
-        //        StoreLocation = Repo.GetStoreById(x.StoreId)
-        //    });
-        //    return View(viewModel);
-        //}
+        public ActionResult Index()
+        {
+            IEnumerable<GameOrder> gameOrders = Repo.GetGameOrders();
+            IEnumerable<GameOrderViewModel> viewModel = gameOrders.Select(x => new GameOrderViewModel
+            {
+                OrderId = x.Id,
+                CustomerId = x.CustomerId,
+                StoreId = x.StoreId,
+                OrderTime = x.OrderTime,
+                Customer = Repo.GetCustomerById(x.CustomerId),
+                StoreLocation = Repo.GetStoreById(x.StoreId)
+            });
+            return View(viewModel);
+        }
 
         // GET: GameOrder/Details/5
         public ActionResult Details(int id)
@@ -39,16 +39,16 @@ namespace GameStore.WebUI.Controllers
             GameOrder gameOrder = Repo.GetGameOrderById(id);
             var customerId = Repo.CustomerIdFromOrderId(id);
             var storeId = Repo.StoreIdFromOrderId(id);
-            var orderItemId = Repo.GetOrderItemIdByCustomerId(id);
-            var gameId = Repo.GetGameIdByOrderItemId(orderItemId);
-            Game game = Repo.GetGameById(gameId);
+            
+            //var orderItemId = Repo.GetOrderItemIdByCustomerId(id);
+            //var gameId = Repo.GetGameIdByOrderItemId(orderItemId);
+            //Game game = Repo.GetGameById(gameId);
             var viewModel = new GameOrderViewModel
             {
                 OrderId = gameOrder.Id,
                 CustomerId = customerId,
                 StoreId = storeId,
-                OrderTime = gameOrder.OrderTime,
-                Game = game
+                OrderTime = gameOrder.OrderTime
             };
             //IEnumerable<GameOrder> gameOrders = Repo.GetGameOrders();
             //IEnumerable<GameOrderViewModel> viewModel = gameOrders.Select(x => new GameOrderViewModel
@@ -66,8 +66,11 @@ namespace GameStore.WebUI.Controllers
         // GET: GameOrder/Create
         public ActionResult Create([FromQuery]int customerId)
         {
+            //var orderId = Repo.GetOrderItemIdByCustomerId(customerId);
+
             var gameOrder = new GameOrderViewModel
             {
+                ListOfGames = Repo.GetGames(),
                 CustomerId = customerId
             };
             return View(gameOrder);
@@ -85,7 +88,7 @@ namespace GameStore.WebUI.Controllers
                 {
                     return View(viewModel);
                 }
-                Customer customer = Repo.GetCustomerById(viewModel.CustomerId);
+                //Customer customer = Repo.GetCustomerById(viewModel.CustomerId);
                 List<Game> game = Repo.GetGames().ToList();
                 var games = new GameOrderViewModel
                 {
@@ -106,6 +109,29 @@ namespace GameStore.WebUI.Controllers
             catch
             {
                 return View(viewModel);
+            }
+        }
+
+        //POST: GameOrder / Create / generic
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Order()
+        {
+            try
+            {
+                GameOrder gameOrder = new GameOrder();
+                gameOrder.CustomerId = 2;
+                gameOrder.StoreId = 2;
+                gameOrder.OrderTime = DateTime.Now;
+
+                Repo.AddOrder(gameOrder);
+                Repo.Save();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(Index));
             }
         }
 

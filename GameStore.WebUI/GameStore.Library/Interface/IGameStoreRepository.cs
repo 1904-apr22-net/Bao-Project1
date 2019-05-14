@@ -23,8 +23,8 @@ namespace GameStore.Library.Interface
         IEnumerable<StoreLocation> GetGameStores(string search = null);
         int GetOrderItemIdByCustomerId(int orderId);
         int GetGameIdByOrderItemId(int orderItemId);
-
-
+        void AddOrder(Library.Models.GameOrder gameOrder);
+        void Save();
 
     }
 }

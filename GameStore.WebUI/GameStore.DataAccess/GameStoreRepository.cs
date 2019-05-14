@@ -44,6 +44,21 @@ namespace GameStore.DataAccess
             };
         }
 
+        //set quantity
+        public void SetQuantity(int setQty, int orderId, int productId)
+        {
+            var orderItem = _dbContext.OrderItem.Include(oi => oi.OrderId == orderId && oi.GameId == productId);
+            foreach (var item in orderItem)
+            {
+                item.Quantity = setQty;
+
+                //var od = new Entities.OrderItem
+                //{
+                //    Quantity = setQty
+                //};
+            }
+        }
+
         //get customer by id
         public Library.Models.Customer GetCustomerById(int id)
         {
@@ -152,6 +167,11 @@ namespace GameStore.DataAccess
                 Name = game.Name,
                 Price = game.Price
             };
+        }
+
+        public void AddOrder(Library.Models.GameOrder gameOrder)
+        {
+            _dbContext.Add(Mapper.Map(gameOrder));
         }
 
         //get all games affiliated with orderid

@@ -13,10 +13,10 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @*<div class="form-group">
-                <label asp-for="OrderId" class="control-label"></label>
-                <input asp-for="OrderId" class="form-control" />
-                <span asp-validation-for="OrderId" class="text-danger"></span>
-            </div>*@
+            <label asp-for="OrderId" class="control-label"></label>
+            <input asp-for="OrderId" class="form-control" />
+            <span asp-validation-for="OrderId" class="text-danger"></span>
+        </div>*@
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
                 <input asp-for="CustomerId" class="form-control" />
@@ -33,15 +33,64 @@
                 <span asp-validation-for="OrderTime" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ListOfGames">List of Games</label>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Game.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Game.Price)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.OrderItem.Quantity)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ListOfGames)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Price)
+                                </td>
+                                <td>
+                                    <select id="quantity">
+                                        <option value=""></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+
+                                    </select>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
+<form asp-action="Order">
+    <div class="form-group">
+        <input type="submit" value="Generic Order" class="btn btn-primary" />
+    </div>
+</form>
+
+@*<div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

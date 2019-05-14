@@ -23,10 +23,12 @@ namespace GameStore.WebUI.Models
         [Display(Name = "Order Time")]
         public DateTime OrderTime { get; set; }
 
+        [Display(Name = "Game")]
         public OrderItem OrderItem { get; set; }
         [Display(Name = "Games")]
         public List<Game> Games { get; set; }
-
+        public IEnumerable<GameViewModel> SomeGames { get; set; }
+        public List<GameViewModel> ListGames { get; set; }
         [Display(Name ="List of Games")]
         public IEnumerable<Game> ListOfGames { get; set; }
         public Game Game { get; set; }
