@@ -1,0 +1,82 @@
+﻿@model GameStore.WebUI.Models.CustomerViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>CustomerViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CustomerId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CustomerId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DefaultStore)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StoreLocation.Name)
+        </dd>
+    </dl>
+</div>
+<p>
+    <a asp-controller="GameOrder" asp-action="Create"
+       asp-all-route-data="@(new Dictionary<string, string> { { "restaurantId", Model.CustomerId.ToString() } })">
+        Add New Order
+    </a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameOrders.First().OrderId)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.GameOrders)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderId)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", "GameOrder", new { id = item.OrderId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
