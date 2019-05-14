@@ -54,17 +54,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.GameOrders)
+        @foreach (var item in Model.ListOfGameOrders)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.CustomerId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OrderId)
+                    @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    @Html.ActionLink("Details", "Details", "GameOrder", new { id = item.OrderId })
+                    @Html.ActionLink("Details", "Details", "GameOrder", new { id = item.Id })
                 </td>
             </tr>
         }

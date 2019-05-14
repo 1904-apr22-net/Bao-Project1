@@ -86,13 +86,19 @@ namespace GameStore.WebUI.Controllers
                     return View(viewModel);
                 }
                 Customer customer = Repo.GetCustomerById(viewModel.CustomerId);
-                var gameOrder = new GameOrder
+                List<Game> game = Repo.GetGames().ToList();
+                var games = new GameOrderViewModel
                 {
-                    Id = viewModel.OrderId,
-                    CustomerId = viewModel.CustomerId,
-                    StoreId = viewModel.StoreId,
-                    OrderTime = viewModel.OrderTime
+                    Games = game
                 };
+
+                //var gameOrder = new GameOrder
+                //{
+                //    Id = viewModel.OrderId,
+                //    CustomerId = viewModel.CustomerId,
+                //    StoreId = viewModel.StoreId,
+                //    OrderTime = viewModel.OrderTime
+                //};
 
                 return RedirectToAction(nameof(CustomerController.Details),
                     "Customer", new { id = viewModel.CustomerId});

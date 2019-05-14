@@ -50,13 +50,14 @@ namespace GameStore.WebUI.Controllers
                 LastName = customers.LastName,
                 DefaultStore = customers.StoreId,
                 StoreLocation = Repo.GetStoreById(customers.StoreId),
-                GameOrders = customers.GameOrders.Select(y => new GameOrderViewModel
-                {
-                    OrderId = y.Id,
-                    StoreId = y.StoreId,
-                    CustomerId = y.CustomerId,
-                    OrderTime = y.OrderTime
-                })
+                ListOfGameOrders = Repo.GetGameOrdersByCustomerId(customers.CustomerId)
+                //GameOrders = customers.GameOrders.Select(y => new GameOrderViewModel
+                //{
+                //    OrderId = y.Id,
+                //    StoreId = y.StoreId,
+                //    CustomerId = y.CustomerId,
+                //    OrderTime = y.OrderTime
+                //})
                 //GameOrders = customers.GameOrders.Select(y => new GameOrderViewModel
                 //{
                 //    CustomerId = y.CustomerId,

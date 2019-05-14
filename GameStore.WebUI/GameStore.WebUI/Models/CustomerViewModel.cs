@@ -25,7 +25,7 @@ namespace GameStore.WebUI.Models
         public StoreLocation StoreLocation { get; set; }
 
         [Display(Name = "Order Id")]
-        //public IEnumerable<GameOrder> GameOrders { get; set; }
+        public IEnumerable<GameOrder> ListOfGameOrders { get; set; }
 
         public IEnumerable<GameOrderViewModel> GameOrders { get; set; }
         public IEnumerable<Game> Games { get; set; }
