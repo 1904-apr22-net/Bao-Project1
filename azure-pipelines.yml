@@ -37,6 +37,6 @@ steps:
 
 - task: AzureRmWebAppDeployment@3
   inputs:
-    azureSubscription: 'Project 1 05152019'
+    azureSubscription: 'Project1'
     WebAppName: '1904-bphung-gamestore'
     Package: $(System.ArtifactsDirectory)/**/*.zip
