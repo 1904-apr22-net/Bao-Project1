@@ -23,7 +23,7 @@ namespace GameStore.WebUI.Models
         [Display(Name = "Order Time")]
         public DateTime OrderTime { get; set; }
 
-        [Display(Name = "Game")]
+        [Display(Name = "Order Item")]
         public OrderItem OrderItem { get; set; }
         [Display(Name = "Games")]
         public List<Game> Games { get; set; }
