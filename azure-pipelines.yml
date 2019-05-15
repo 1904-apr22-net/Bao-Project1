@@ -16,3 +16,13 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration) $(solutionPath)
   displayName: 'dotnet build $(buildConfiguration) $(solutionPath)' 
+
+
+# ...
+# do this after your tests have run
+- script: dotnet test **/*Tests/*.csproj --logger trx
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
