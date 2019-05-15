@@ -16,11 +16,3 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration) $(solutionPath)
   displayName: 'dotnet build $(buildConfiguration) $(solutionPath)' 
-
-# ...
-# do this after other tasks such as building
-- task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
