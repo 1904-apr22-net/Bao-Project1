@@ -14,6 +14,14 @@ variables:
   solutionPath: 'GameStore'
 
 steps:
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'sonarcloud-bphung'
+    organization: 'bphung1-github'
+    scannerMode: 'MSBuild'
+    projectKey: 'bphung1904Project1'
+
 - script: dotnet build --configuration $(buildConfiguration) $(solutionPath)
   displayName: 'dotnet build $(buildConfiguration) $(solutionPath)' 
 
@@ -24,6 +32,13 @@ steps:
     command: test
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
+
+- task: SonarCloudAnalyze@1
+  inputs: {}
+
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '60'
 
 # ...
 # do this after you've built your app, near the end of your pipeline in most cases
