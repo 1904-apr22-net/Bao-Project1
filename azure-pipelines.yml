@@ -17,12 +17,10 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration) $(solutionPath)
   displayName: 'dotnet build $(buildConfiguration) $(solutionPath)' 
 
-
 # ...
-# do this after your tests have run
-- script: dotnet test <**/*Tests/*.csproj> --logger trx
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
+# do this after other tasks such as building
+- task: DotNetCoreCLI@2
   inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
