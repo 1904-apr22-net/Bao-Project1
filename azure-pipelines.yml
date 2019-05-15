@@ -35,8 +35,17 @@ steps:
     arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
 
-- task: AzureRmWebAppDeployment@3
+- task: AzureRmWebAppDeployment@4
   inputs:
+    ConnectionType: 'AzureRM'
     azureSubscription: 'Project1'
-    WebAppName: '1904-bphung-gamestore'
-    Package: $(System.ArtifactsDirectory)/**/*.zip
+    appType: 'webApp'
+    WebAppName: '1904-bphung-GameStore'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+
+# - task: AzureRmWebAppDeployment@3
+#   inputs:
+#     azureSubscription: 'Project1'
+#     WebAppName: '1904-bphung-gamestore'
+#     Package: $(System.ArtifactsDirectory)/**/*.zip
+
