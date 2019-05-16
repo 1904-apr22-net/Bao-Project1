@@ -29,7 +29,8 @@
             @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DefaultStore)
+            @*@Html.DisplayNameFor(model => model.DefaultStore)*@
+            Default Store
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StoreLocation.Name)
@@ -38,7 +39,7 @@
 </div>
 <p>
     <a asp-controller="GameOrder" asp-action="Create"
-       asp-all-route-data="@(new Dictionary<string, string> { { "restaurantId", Model.CustomerId.ToString() } })">
+       asp-all-route-data="@(new Dictionary<string, string> { { "customerId", Model.CustomerId.ToString() } })">
         Add New Order
     </a>
 </p>
@@ -46,7 +47,11 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CustomerId)
+                @*@Html.DisplayNameFor(model => model.CustomerId)*@
+                Name
+            </th>
+            <th>
+                Store
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.GameOrders.First().OrderId)
@@ -58,7 +63,11 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CustomerId)
+                    @Html.DisplayFor(modelItem => Model.FirstName)
+                    @Html.DisplayFor(modelItem => Model.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.StoreLocation.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Id)

@@ -10,7 +10,7 @@ namespace GameStore.Library.Models
         public int Quantity { get; set; }
         public int GameId { get; set; }
 
-        public int GameOrdId { get; set; }
+        public int GameOrderId { get; set; }
         public Game Game { get; set; }
         public GameOrder GameOrder { get; set; }
     }

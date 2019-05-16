@@ -16,6 +16,27 @@ namespace GameStore.DataAccess
         public GameStoreRepository(GameStoreContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+
+        }
+
+        public Library.Models.GameOrder GetRecentOrder()
+        {
+            return Mapper.Map(_dbContext.GameOrder.OrderByDescending(o => o.OrderId).First());
+
+            //var order = _dbContext.GameOrder.OrderByDescending(o => o.OrderId).First();
+
+            //if (order == null)
+            //{
+            //    return null;
+            //}
+
+            //return new Library.Models.GameOrder
+            //{
+            //    Id = order.OrderId,
+            //    OrderTime = order.OrderTime,
+            //    CustomerId = order.CustomerId,
+            //    StoreId = order.StoreId
+            //};
         }
 
         //get all customers
@@ -98,6 +119,14 @@ namespace GameStore.DataAccess
                 StoreId = order.StoreId
             };
         }
+        public int GetRecentOrderIdByCustomerId(int customerId)
+        {
+
+            var order = _dbContext.GameOrder.OrderByDescending(o => o.OrderId).FirstOrDefault(o => o.CustomerId.Equals(customerId));
+
+
+            return order.OrderId;
+        }
 
         public Library.Models.GameOrder GetGameOrderById(int id)
         {
@@ -113,12 +142,17 @@ namespace GameStore.DataAccess
             return gameOrder.CustomerId;
         }
 
-        public int GetOrderItemIdByCustomerId(int orderId)
+        public int GetOrderItemIdByOrderId(int orderId)
         {
             Entities.OrderItem orderItem = _dbContext.OrderItem.AsNoTracking()
                 .First(r => r.OrderId == orderId);
             return orderItem.OrderItemId;
         }
+
+        //public GameOrder GetQuantity()
+        //{
+
+        //}
 
         public int GetGameIdByOrderItemId(int orderItemId)
         {
@@ -131,6 +165,13 @@ namespace GameStore.DataAccess
             Entities.GameOrder gameOrder = _dbContext.GameOrder.AsNoTracking()
                 .First(r => r.OrderId == orderId);
             return gameOrder.StoreId;
+        }
+
+        //get store id with customer id
+        public int GetStoreIdByCustomerId(int customerId)
+        {
+            var storeId = _dbContext.Customer.FirstOrDefault(s => s.CustomerId == customerId);
+            return storeId.DefaultStore;
         }
 
         //get a store by id
@@ -174,10 +215,27 @@ namespace GameStore.DataAccess
             _dbContext.Add(Mapper.Map(gameOrder));
         }
 
-        //get all games affiliated with orderid
-        public IEnumerable<Library.Models.OrderItem> GetOrderItems(int orderId)
+        public void AddOrderItem(Library.Models.OrderItem orderItem)
         {
-            return Mapper.Map(_dbContext.OrderItem.Where(oi => oi.OrderId == orderId).ToList());
+            _dbContext.Add(Mapper.Map(orderItem));
+        }
+
+        public int GetGameIdByOrderId(int orderId)
+        {
+            var orderItem = _dbContext.OrderItem.FirstOrDefault(oi => oi.OrderId.Equals(orderId));
+
+            return orderItem.GameId;
+        }
+
+        public Library.Models.OrderItem GetOrderItemByOrderId(int orderId)
+        {
+            var orderItem = _dbContext.OrderItem.FirstOrDefault(oi => oi.OrderId.Equals(orderId));
+            return new Library.Models.OrderItem
+            {
+                OrderItemId = orderItem.OrderItemId,
+                GameOrderId = orderItem.OrderId,
+                GameId = orderItem.GameId
+            };
         }
 
         //get game affiliated with orderid
@@ -202,6 +260,26 @@ namespace GameStore.DataAccess
             return Mapper.Map(_dbContext.GameOrder.Where(id => id.CustomerId == customerId).ToList());
         }
 
+        public IEnumerable<Library.Models.OrderItem> GetOrderItemsByOrderId(int orderId)
+        {
+            var items = _dbContext.OrderItem;
+            List<Library.Models.OrderItem> orderItems = new List<Library.Models.OrderItem>();
+
+            foreach (var item in items)
+            {
+                if (item.OrderId == orderId)
+                {
+                    var orderItem = new Library.Models.OrderItem
+                    {
+                        OrderItemId = item.OrderItemId,
+                        GameOrderId = item.OrderId,
+                        GameId = item.GameId
+                    };
+                    orderItems.Add(orderItem);
+                }
+            }
+            return orderItems.ToList();
+        }
         //get all stores
         public IEnumerable<StoreLocation> GetGameStores(string search = null)
         {
@@ -216,6 +294,34 @@ namespace GameStore.DataAccess
 
         public void Save()
         {
+            _dbContext.SaveChanges();
+        }
+
+        public void Create(Library.Models.GameOrder gameOrder)
+        {
+            //var orderEntity = new Entities.GameOrder
+            //{
+            //    CustomerId = gameOrder.CustomerId,
+            //    StoreId = gameOrder.StoreId
+            //};
+
+            //var orderItemEntity = new Entities.OrderItem
+            //{
+            //    OrderId = orderItem.OrderItemId,
+            //    GameId = orderItem.GameId,
+            //    Quantity = orderItem.Quantity
+            //};
+            var orderEntity = _dbContext.GameOrder;
+            //var orderItemEntity = _dbContext.OrderItem;
+
+            Entities.GameOrder newOrderEntity = Mapper.Map(gameOrder);
+            //Entities.OrderItem newOrderItemEntity = Mapper.Map(orderItem);
+
+            orderEntity.Add(newOrderEntity);
+            //orderItemEntity.Add(newOrderItemEntity);
+
+            //_dbContext.GameOrder.Add(orderEntity);
+            //_dbContext.OrderItem.Add(orderItemEntity);
             _dbContext.SaveChanges();
         }
     }

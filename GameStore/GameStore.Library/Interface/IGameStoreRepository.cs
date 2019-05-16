@@ -7,6 +7,10 @@ namespace GameStore.Library.Interface
 {
     public interface IGameStoreRepository
     {
+        void AddOrderItem(Library.Models.OrderItem orderItem);
+        Library.Models.GameOrder GetRecentOrder();
+        int GetRecentOrderIdByCustomerId(int customerId);
+        int GetStoreIdByCustomerId(int customerId);
         IEnumerable<Customer> GetCustomers(string search = null);
         Library.Models.Customer GetCustomer(string firstName, string lastName);
         Library.Models.Customer GetCustomerById(int id);
@@ -18,13 +22,15 @@ namespace GameStore.Library.Interface
         Library.Models.GameOrder GetGameOrderById(int id);
         Library.Models.Game GetGameById(int gameId);
         int CustomerIdFromOrderId(int orderId);
-        IEnumerable<Library.Models.OrderItem> GetOrderItems(int orderId);
+        IEnumerable<Library.Models.OrderItem> GetOrderItemsByOrderId(int orderId);
         int StoreIdFromOrderId(int orderId);
         IEnumerable<StoreLocation> GetGameStores(string search = null);
-        int GetOrderItemIdByCustomerId(int orderId);
+        int GetOrderItemIdByOrderId(int orderId);
         int GetGameIdByOrderItemId(int orderItemId);
         void AddOrder(Library.Models.GameOrder gameOrder);
+        Library.Models.OrderItem GetOrderItemByOrderId(int orderId);
         void Save();
+        void Create(Library.Models.GameOrder gameOrder);
 
     }
 }

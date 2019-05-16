@@ -18,20 +18,17 @@
             <span asp-validation-for="OrderId" class="text-danger"></span>
         </div>*@
             <div class="form-group">
-                <label asp-for="CustomerId" class="control-label"></label>
-                <input asp-for="CustomerId" class="form-control" />
-                <span asp-validation-for="CustomerId" class="text-danger"></span>
+                @Html.DisplayFor(model => model.Customer.FirstName)
+                @Html.DisplayFor(model => model.Customer.LastName)
             </div>
             <div class="form-group">
-                <label asp-for="StoreId" class="control-label"></label>
-                <input asp-for="StoreId" class="form-control" />
-                <span asp-validation-for="StoreId" class="text-danger"></span>
+                @Html.DisplayFor(model => model.StoreLocation.Name)
             </div>
-            <div class="form-group">
-                <label asp-for="OrderTime" class="control-label"></label>
-                <input asp-for="OrderTime" class="form-control" />
-                <span asp-validation-for="OrderTime" class="text-danger"></span>
-            </div>
+
+            @Html.HiddenFor(m => Model.CustomerId)
+            @Html.HiddenFor(m => Model.OrderId)
+            @Html.HiddenFor(m => Model.StoreId)
+
             <div class="form-group">
                 <label asp-for="ListOfGames">List of Games</label>
                 <table class="table">
@@ -59,21 +56,15 @@
                                     @Html.DisplayFor(model => item.Price)
                                 </td>
                                 <td>
-                                    <select id="quantity">
-                                        <option value="">  </option>
-                                        <option value="1"> 1 </option>
-                                        <option value="2"> 2 </option>
-                                        <option value="3"> 3 </option>
-                                        <option value="4"> 4 </option>
-                                        <option value="5"> 5 </option>
-                                    </select>
+                                    <select asp-for="Quantity" asp-items="@(new SelectList(Model.ChooseQuantity))"></select>
                                 </td>
                             </tr>
+
                         }
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -81,11 +72,17 @@
     </div>
 </div>
 
-<form asp-action="Order">
+@*<form asp-action="DisplayViewModel">
+    <div>
+        @Html.DisplayFor(m => m.StoreId)
+    </div>
+</form>*@
+
+@*<form asp-action="Order">
     <div class="form-group">
         <input type="submit" value="Generic Order" class="btn btn-primary" />
     </div>
-</form>
+</form>*@
 
 @*<div>
     <a asp-action="Index">Back to List</a>
