@@ -48,15 +48,16 @@ namespace GameStore.WebUI.Controllers
             var game = Repo.GetGameById(orderItem.GameId);
 
             List<Game> games = new List<Game>();
+            List<int> qty = new List<int>();
             foreach (var item in orderItems)
             {
                 games.Add(Repo.GetGameById(item.GameId));
+                qty.Add(item.Quantity);
             }
-            //var orderItemId = Repo.GetOrderItemIdByCustomerId(id);
-            //var gameId = Repo.GetGameIdByOrderItemId(orderItemId);
-            //Game game = Repo.GetGameById(gameId);
             var viewModel = new GameOrderViewModel
             {
+                QauntityList = qty,
+                Quantity = orderItem.Quantity,
                 ListOfGames = games,
                 Game = game,
                 OrderItem = orderItem,
@@ -69,45 +70,30 @@ namespace GameStore.WebUI.Controllers
                 StoreId = customerIdToStoreId,
                 OrderTime = gameOrder.OrderTime
             };
-            //IEnumerable<GameOrder> gameOrders = Repo.GetGameOrders();
-            //IEnumerable<GameOrderViewModel> viewModel = gameOrders.Select(x => new GameOrderViewModel
-            //{
-            //    OrderId = x.Id,
-            //    CustomerId = x.CustomerId,
-            //    StoreId = x.StoreId,
-            //    OrderTime = x.OrderTime,
-            //    Customer = Repo.GetCustomerById(x.CustomerId),
-            //    StoreLocation = Repo.GetStoreById(x.StoreId)
-            //});
             return View(viewModel);
         }
 
         // GET: GameOrder/Create
         public ActionResult Create([FromQuery]int customerId)
         {
-            //var orderId = Repo.GetOrderItemIdByCustomerId(customerId);
             var storeId = Repo.GetStoreIdByCustomerId(customerId);
             var games = Repo.GetGames();
             var orderId = Repo.GetRecentOrderIdByCustomerId(customerId);
             var orderItems = Repo.GetOrderItemsByOrderId(orderId);
             var orderItemId = Repo.GetOrderItemIdByOrderId(orderId);
-            var gameId = Repo.GetGameIdByOrderItemId(orderId);
-            //List<int> qty = new List<int>();
-            //qty.Add(0);
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    qty.Add(i+1);
-            //}
-            var qty = GetQuantity();
+            var gameId = Repo.GetGameByOrderId(orderId);
 
-            var quant = new GameOrderViewModel();
-            //quant.qty = GetSelectListItems(qty);
+            List<int> qty = new List<int>();
+            qty.Add(0);
+            for (int i = 0; i < 10; i++)
+            {
+                qty.Add(i + 1);
+            }
+
 
             var gameOrder = new GameOrderViewModel
             {
-                OrderId = Repo.GetRecentOrder().Id,
-                qty = GetSelectListItems(qty),
-                GameId = gameId,
+                GameId = gameId.GameId,
                 OrderItemId = orderItemId,
                 OrderItems = orderItems,
                 ChooseQuantity = qty,
@@ -119,127 +105,44 @@ namespace GameStore.WebUI.Controllers
             return View(gameOrder);
         }
 
-        //public ActionResult SetOrder([FromQuery]int quantityValue)
-        //{
-
-        //}
-
-        private IEnumerable<int> GetQuantity()
-        {
-            return new List<int>
-            {
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7
-            };
-        }
-
-        private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<int> quantity)
-        {
-            var selectList = new List<SelectListItem>();
-
-            foreach (var item in quantity)
-            {
-                selectList.Add(new SelectListItem
-                {
-                    Value = item.ToString(),
-                    Text = item.ToString()
-                });
-            }
-
-            return selectList;
-        }
-
-        //public ActionResult SetOrder(int orderId, int quantity, int gameId, int customerId)
-        //{
-        //    var storeId = Repo.GetStoreIdByCustomerId(customerId);
-
-
-        //}
-        //List<GameOrderViewModel> gameOrderViewModels = new List<GameOrderViewModel>();
-        //int gameid;
-        //public ActionResult DisplayViewModel(GameOrderViewModel viewModel)
-        //{
-        //    //viewModel.OrderId = Repo.GetRecentOrder().Id;
-            
-        //    return View(viewModel);
-        //}
 
         // POST: GameOrder/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(GameOrderViewModel gameOrder)
+        public ActionResult Create(GameOrderViewModel viewModel)
         {
             try
             {
+                GameOrder gameOrder = new GameOrder();
+                gameOrder.CustomerId = viewModel.CustomerId;
+                gameOrder.StoreId = Repo.GetStoreIdByCustomerId(viewModel.CustomerId);
+                gameOrder.OrderTime = DateTime.Now;
 
-                gameOrder.OrderId = Repo.GetRecentOrder().Id;
+                Repo.AddOrder(gameOrder);
+                Repo.Save();
 
-                GameOrder order = new GameOrder();
-                order.Id = gameOrder.OrderId + 1;
-                order.CustomerId = gameOrder.CustomerId;
-                order.StoreId = gameOrder.StoreId;
-                //var quantity = GetQuantity();
-                //var quant = gameOrder;
-                //quant.qty = GetSelectListItems(quantity);
+                OrderItem orderItem = new OrderItem();
+                var listOfGames = Repo.GetGames().ToList();
+                for (int i = 0; i < viewModel.QauntityList.Count(); i++)
+                {
+                    if (viewModel.QauntityList[i] > 0)
+                    {
+                        orderItem.GameOrderId = Repo.GetRecentOrder().Id;
+                        orderItem.GameId = listOfGames[i].GameId;
+                        orderItem.Quantity = viewModel.QauntityList[i];
 
+                        Repo.AddOrderItem(orderItem);
+                        Repo.Save();
+                    }
+                }
+                
 
                 // TODO: Add insert logic here
-                //if (!ModelState.IsValid)
-                //{
-                //    return View(viewModel);
-                //}
-                //Customer customer = Repo.GetCustomerById(viewModel.CustomerId);
-                //List<Game> game = Repo.GetGames().ToList();
-                //var games = new GameOrderViewModel
-                //{
-                //    Games = game
-                //};
-
-                //var gameOrder = new GameOrder
-                //{
-                //    Id = viewModel.OrderId,
-                //    CustomerId = viewModel.CustomerId,
-                //    StoreId = viewModel.StoreId,
-                //    OrderTime = viewModel.OrderTime
-                //};
-
-                //var gameOrder = new GameOrder
-                //{
-                //    CustomerId = viewModel.CustomerId,
-                //    StoreId = viewModel.StoreId,
-                //    OrderTime = DateTime.Now
-                //};
-
-                //var orderItem = new OrderItem
-                //{
-                //    OrderItemId = viewModel.OrderItemId,
-                //    GameId = viewModel.OrderItemId,
-                //    Quantity = viewModel.Quantity
-                //};
-
-                //Repo.Create(gameOrder);
-                //GameOrder newGameOrder = new GameOrder();
-                //gameOrder.CustomerId = gameOrder.CustomerId;
-                //gameOrder.StoreId = gameOrder.StoreId;
-                //gameOrder.OrderTime = DateTime.Now;
-
-                //OrderItem orderItem = new OrderItem();
-                //orderItem.OrderItemId = viewModel.OrderItemId;
-                //orderItem.GameId = viewModel.GameId;
-                //orderItem.Quantity = viewModel.Quantity;
-                //Repo.AddOrder(newGameOrder);
-                Repo.Save();
                 return RedirectToAction(nameof(CustomerController.Index));
             }
             catch
             {
-                return View(gameOrder);
+                return RedirectToAction(nameof(CustomerController.Index));
             }
         }
 
@@ -252,13 +155,14 @@ namespace GameStore.WebUI.Controllers
             {
                 GameOrder gameOrder = new GameOrder();
                 gameOrder.CustomerId = 1;
-                gameOrder.StoreId = 1;
+                gameOrder.StoreId = Repo.GetStoreIdByCustomerId(1);
                 gameOrder.OrderTime = DateTime.Now;
 
                 Repo.AddOrder(gameOrder);
+                Repo.Save();
 
                 OrderItem orderItem = new OrderItem();
-                orderItem.GameOrderId = gameOrder.Id;
+                orderItem.GameOrderId = Repo.GetRecentOrder().Id;
                 orderItem.GameId = 3;
                 orderItem.Quantity = 3;
 
@@ -275,10 +179,10 @@ namespace GameStore.WebUI.Controllers
         }
 
         // GET: GameOrder/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        //public ActionResult Edit(int id)
+        //{
+        //    return View();
+        //}
 
         // POST: GameOrder/Edit/5
         //[HttpPost]
@@ -298,10 +202,10 @@ namespace GameStore.WebUI.Controllers
         //}
 
         // GET: GameOrder/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        //public ActionResult Delete(int id)
+        //{
+        //    return View();
+        //}
 
         // POST: GameOrder/Delete/5
         //[HttpPost]

@@ -7,6 +7,7 @@ namespace GameStore.Library.Interface
 {
     public interface IGameStoreRepository
     {
+        Library.Models.OrderItem GetGameByOrderId(int orderId);
         void AddOrderItem(Library.Models.OrderItem orderItem);
         Library.Models.GameOrder GetRecentOrder();
         int GetRecentOrderIdByCustomerId(int customerId);

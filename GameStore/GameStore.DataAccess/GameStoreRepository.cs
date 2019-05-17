@@ -160,6 +160,17 @@ namespace GameStore.DataAccess
                 .First(r => r.OrderItemId == orderItemId);
             return game.GameId;
         }
+        public Library.Models.OrderItem GetGameByOrderId(int orderId)
+        {
+            Entities.OrderItem orderItem = _dbContext.OrderItem.FirstOrDefault(oi => oi.OrderId == orderId);
+            return new Library.Models.OrderItem
+            {
+                GameOrderId = orderItem.OrderId,
+                GameId = orderItem.GameId,
+                OrderItemId = orderItem.OrderItemId
+            };
+        }
+
         public int StoreIdFromOrderId(int orderId)
         {
             Entities.GameOrder gameOrder = _dbContext.GameOrder.AsNoTracking()
@@ -273,7 +284,8 @@ namespace GameStore.DataAccess
                     {
                         OrderItemId = item.OrderItemId,
                         GameOrderId = item.OrderId,
-                        GameId = item.GameId
+                        GameId = item.GameId,
+                        Quantity = (int)item.Quantity
                     };
                     orderItems.Add(orderItem);
                 }

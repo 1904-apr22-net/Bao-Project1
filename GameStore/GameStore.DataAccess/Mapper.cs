@@ -56,16 +56,16 @@ namespace GameStore.DataAccess
         {
             OrderItemId = orderItem.OrderItemId,
             Quantity = (int)orderItem.Quantity,
-            Game = Map(orderItem.Game),
-            GameOrder = Map(orderItem.Order)
+            GameId = orderItem.GameId,
+            GameOrderId = orderItem.OrderId
         };
 
         public static Entities.OrderItem Map(Library.Models.OrderItem orderItem) => new Entities.OrderItem
         {
             OrderItemId = orderItem.OrderItemId,
             Quantity = orderItem.Quantity,
-            Game = Map(orderItem.Game),
-            Order = Map(orderItem.GameOrder)
+            GameId = orderItem.GameId,
+            OrderId = orderItem.GameOrderId
         };
 
         public static Library.Models.Game Map(Entities.Game game) => new Library.Models.Game
